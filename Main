@@ -9,7 +9,7 @@
 % Laptop Screen Resoltion : 1366 x 768
 
 % Screen Setting + Resolution + Centre Variables ------------------------------------------ Screen Setting
-setscreen ("graphics:1366;768")
+setscreen ("graphics:max;max")
 var CENTREX : int := maxx div 2
 var CENTREY : int := maxy div 2
 % Fonts ----------------------------------------------------------------------------------- FONTS
@@ -92,7 +92,7 @@ var mobCount : int := 0
 % Boss Count
 var bossCount : int := 0
 % Random Variables
-var mineXP, fishXP, chopXP, fightXP, playerDamage, mobDamage, randItem, randSpell : int
+var mineXP, fishXP, chopXP, fightXP, playerDamage, mobDamage, randItem, randSpell : int := 0
 % Health, Levels, and Interaction
 bossHealth := 1000
 mobHealth1 := 100
@@ -111,7 +111,7 @@ procedure startMenu
     pic1 := Pic.FileNew ("startmenupic.jpg")
     pic1 := Pic.Scale (pic1, maxx, maxy)
     Pic.Draw (pic1, 0, 0, picMerge)
-    Font.Draw ("Journey of Oblivion", CENTREX - 170, 600, font1, black)
+    Font.Draw ("Journey of Oblivion", CENTREX - 170, 600, font1, brightred)
     Font.Draw ("Start Game", CENTREX - 80, 500, font2, 0)
     Font.Draw ("Instructions", CENTREX - 85, 400, font2, 0)
     Font.Draw ("Achievements", CENTREX - 94, 300, font2, 0)
@@ -508,12 +508,16 @@ end mlevelUp
 procedure mine
     if oreCount <= 15 then
         Font.Draw ("You have mined some coal!", CENTREX - 190, CENTREY + 270, font3, 92)
+        randint (mineXP, 3, 6)
     elsif oreCount <= 30 then
         Font.Draw ("You have mined some copper!", CENTREX - 190, CENTREY + 270, font3, 92)
+        randint (mineXP, 7, 8)
     elsif oreCount <= 45 then
         Font.Draw ("You have mined some iron!", CENTREX - 190, CENTREY + 270, font3, 92)
+        mineXP := 9
     else
         Font.Draw ("You have mined some gold!", CENTREX - 190, CENTREY + 270, font3, 92)
+        mineXP := 10
     end if
     totalMine := totalMine + mineXP
     mlevelUp
@@ -593,16 +597,16 @@ end chop
 
 procedure flevelUp
 
-    if totalFight >= 100 and totalFight < 200 then
+    if totalFight >= 300 and totalFight < 600 then
         fightLevel := 2
         health := 200
-    elsif totalFight >= 200 and totalFight < 350 then
+    elsif totalFight >= 600 and totalFight < 800 then
         fightLevel := 3
         health := 300
-    elsif totalFight >= 350 and totalFight < 500 then
+    elsif totalFight >= 1000 and totalFight < 1200 then
         fightLevel := 4
         health := 400
-    elsif totalFight >= 500 and totalFight < 750 then
+    elsif totalFight >= 1200 and totalFight < 1600 then
         fightLevel := 5
         health := 500
     else
@@ -1083,7 +1087,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                 Input.KeyDown (chars)
                 if chars ('e') then
                     drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
-                    Font.Draw ("Press E to mine", CENTREX - 250, CENTREY + 250, font3, 93)
+                    Font.Draw ("Spam E to mine", CENTREX - 250, CENTREY + 250, font3, 93)
                     timer2 := Time.Elapsed + 5000
                     oreCount := 0
                     for i : 1 .. maxint
