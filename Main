@@ -9,7 +9,7 @@
 % Laptop Screen Resoltion : 1366 x 768
 
 % Screen Setting + Resolution + Centre Variables ------------------------------------------ Screen Setting
-setscreen ("graphics:max;max")
+setscreen ("graphics:1366;768")
 var CENTREX : int := maxx div 2
 var CENTREY : int := maxy div 2
 % Fonts ----------------------------------------------------------------------------------- FONTS
@@ -26,7 +26,7 @@ var chars : array char of boolean
 var pic1, pic2, pic3 : int
 var housePic, cavePic, mineShaftPic, bossCavePic, mons1Pic, mons2Pic, mons3Pic : int
 var mineOre, mineOre2 : int
-var bossPic : int
+var bossPic, boss2Pic, boss3Pic : int
 
 bossCavePic := Pic.FileNew ("bosscave.gif")
 bossCavePic := Pic.Scale (bossCavePic, maxx, maxy)
@@ -43,7 +43,7 @@ var ch : char
 
 % Boolean Variables for loops ---------------------------------------------------------------------- Boolean Variables
 var startMenuB : boolean := true % \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ TEMPORARY
-var houseRoom, oceanRoom, caveRoom, bbossRoom, mainMapRoom, forestRoom, mineRoom : boolean := false
+var houseRoom, oceanRoom, caveRoom, bbossRoom, mainMapRoom, forestRoom, mineRoom, mons1Death, mons2Death, mons3Death : boolean := false
 var characterRoom, leadboardB, exitMenuB, instructB, achieveB : boolean := false
 % Achievements
 var fishAchieve, fightAchieve, chopAchieve, bossAchieve, mineAchieve : boolean := false
@@ -57,24 +57,33 @@ var charcSpr, bossSpr, monsSpr, mons2Spr, mons3Spr : int
 charcWar := Pic.FileNew ("warrior.gif")
 charcWar := Pic.Scale (charcWar, 300, 400)
 charcMage := Pic.FileNew ("mage.gif")
-charcMage := Pic.Scale (charcMage, 300, 300)
+charcMage := Pic.Scale (charcMage, 400, 248)
 charcRang := Pic.FileNew ("ranger.gif")
-charcRang := Pic.Scale (charcRang, 300, 300)
+charcRang := Pic.Scale (charcRang, 400, 258)
 charcSpr := Sprite.New (charcWar)
 
-% Boss
-bossPic := Pic.FileNew ("dragon.gif")
+
+% Bosses
+bossPic := Pic.FileNew ("boss.gif")
 bossPic := Pic.Scale (bossPic, 500, 500)
-bossSpr := Sprite.New (bossPic)
+boss2Pic := Pic.FileNew ("boss2.gif")
+boss2Pic := Pic.Scale (boss2Pic, 500, 500)
+boss3Pic := Pic.FileNew ("boss3.gif")
+boss3Pic := Pic.Scale (boss3Pic, 500, 500)
+
 
 % Monsters
-mons1Pic := Pic.FileNew ("MonsterSprite.gif")
-mons1Pic := Pic.Scale (mons1Pic, 300, 300)
+mons1Pic := Pic.FileNew ("mons1.gif")
+mons1Pic := Pic.Scale (mons1Pic, 400, 400)
 monsSpr := Sprite.New (mons1Pic)
-mons2Pic := Pic.Scale (mons1Pic, 200, 200)
+mons2Pic := Pic.FileNew ("mons2.gif")
+mons2Pic := Pic.Scale (mons2Pic, 400, 216)
 mons2Spr := Sprite.New (mons2Pic)
-mons3Pic := Pic.Scale (mons1Pic, 150, 150)
+mons3Pic := Pic.FileNew ("mons3.gif")
+mons3Pic := Pic.Scale (mons3Pic, 240, 180)
 mons3Spr := Sprite.New (mons3Pic)
+
+
 % Gameplay Variables -------------------------------------------------------------------------------------------Gameplay Variables
 
 % Enemy Health
@@ -92,7 +101,7 @@ var mobCount : int := 0
 % Boss Count
 var bossCount : int := 0
 % Random Variables
-var mineXP, fishXP, chopXP, fightXP, playerDamage, mobDamage, randItem, randSpell : int := 0
+var mineXP, fishXP, chopXP, fightXP, playerDamage, mobDamage, randItem, randSpell, randBoss : int := 0
 % Health, Levels, and Interaction
 bossHealth := 1000
 mobHealth1 := 100
@@ -202,11 +211,12 @@ procedure achieve
     end if
 
     if bossAchieve = true then
-        Font.Draw ("Champion: Defeat the final boss (50)", CENTREX - 570, CENTREY - 170, font2, brightgreen)
+        Font.Draw ("Champion: Defeat one of the 3 bosses (50)", CENTREX - 570, CENTREY - 170, font2, brightgreen)
         achieveScore += 50
     else
-        Font.Draw ("Champion: Defeat the final boss (50)", CENTREX - 570, CENTREY - 170, font2, black)
+        Font.Draw ("Champion: Defeat one of the 3 bosses (50)", CENTREX - 570, CENTREY - 170, font2, black)
     end if
+
     Font.Draw ("Your total achievement score is " + intstr (achieveScore), CENTREX - 570, CENTREY - 220, font2, black)
 
 
@@ -316,7 +326,17 @@ procedure bossRoom
     Sprite.Hide (mons3Spr)
     cls
     Pic.Draw (bossCavePic, 0, 0, picMerge)
-    Sprite.Show (bossSpr)
+    randint (randBoss, 1, 3)
+    if randBoss = 1 then
+        bossSpr := Sprite.New (bossPic)
+        Sprite.Show (bossSpr)
+    elsif randBoss = 2 then
+        bossSpr := Sprite.New (boss2Pic)
+        Sprite.Show (bossSpr)
+    else
+        bossSpr := Sprite.New (boss3Pic)
+        Sprite.Show (bossSpr)
+    end if
     Sprite.SetPosition (bossSpr, 250, 250, true)
 
     % Fight Statements
@@ -470,7 +490,7 @@ procedure mainMap
 
 end mainMap
 
-% Character Design Background  ----------------------------------------------------------------------------  MENU ---------------------------------------
+% Character Design Background  ----------------------------------------------------------------------------  MENU --------------------------------------- CHARC DESIGN
 procedure characterCreate
 
     cls
@@ -479,8 +499,8 @@ procedure characterCreate
     drawfillbox (CENTREX - 200, CENTREY - 100, CENTREX + 200, CENTREY + 300, blue)
     drawfillbox (maxx - 500, CENTREY - 100, maxx - 100, CENTREY + 300, green)
     Pic.Draw (charcWar, 120, CENTREY - 100, picMerge)
-    Pic.Draw (charcMage, CENTREX - 150, CENTREY - 100, picMerge)
-    Pic.Draw (charcRang, maxx - 420, CENTREY - 50, picMerge)
+    Pic.Draw (charcMage, CENTREX - 200, CENTREY - 50, picMerge)
+    Pic.Draw (charcRang, maxx - 480, CENTREY - 5, picMerge)
     drawfillbox (CENTREX - 100, 50, CENTREX + 100, 100, brightgreen)
     Font.Draw ("START", CENTREX - 50, 70, font3, 0)
 
@@ -506,13 +526,16 @@ procedure mlevelUp
 end mlevelUp
 
 procedure mine
-    if oreCount <= 15 then
+    if oreCount = 0 then
+        Font.Draw ("You have mined nothing!", CENTREX - 190, CENTREY + 270, font3, 92)
+        mineXP := 0
+    elsif oreCount <= 15 then
         Font.Draw ("You have mined some coal!", CENTREX - 190, CENTREY + 270, font3, 92)
         randint (mineXP, 3, 6)
-    elsif oreCount <= 30 then
+    elsif oreCount <= 20 then
         Font.Draw ("You have mined some copper!", CENTREX - 190, CENTREY + 270, font3, 92)
         randint (mineXP, 7, 8)
-    elsif oreCount <= 45 then
+    elsif oreCount <= 35 then
         Font.Draw ("You have mined some iron!", CENTREX - 190, CENTREY + 270, font3, 92)
         mineXP := 9
     else
@@ -537,7 +560,7 @@ procedure fishlevelUp
 end fishlevelUp
 
 procedure fish
-    randint (fishCount,0,10)
+    randint (fishCount, 0, 10)
     if fishCount = 0 then
         Font.Draw ("You have caught nothing!", CENTREX - 190, CENTREY + 260, font3, 92)
         fishXP := 0
@@ -712,6 +735,8 @@ end rItem
 
 loop % outer game loop, loops through, checks which is true (one procedure only), other executions are false
 
+
+
     if startMenuB = true then
         startMenuB := false
         startMenu
@@ -740,6 +765,8 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
         end loop
     end if
 
+
+
     if instructB = true then
         instructB := false
         instruct
@@ -754,6 +781,8 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
             end if
         end loop
     end if
+
+
 
     if achieveB = true then
         achieveB := false
@@ -770,6 +799,8 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
         end loop
     end if
 
+
+
     if leadboardB = true then
         leadboardB := false
         leadBoard
@@ -785,6 +816,8 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
         end loop
     end if
 
+
+
     if exitMenuB = true then
         exitMenu
         exit
@@ -795,37 +828,49 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
         characterRoom := false
         characterCreate
         charcWar := Pic.Scale (charcWar, 300, 400)
-        charcMage := Pic.Scale (charcMage, 300, 300)
-        charcRang := Pic.Scale (charcRang, 300, 300)
+        charcMage := Pic.Scale (charcMage, 400, 248)
+        charcRang := Pic.Scale (charcRang, 400, 258)
         % Character Selection
         loop % If User clicks a character, it highlights the box and darkens the others
             buttonwait ("down", x, y, buttonNumber, buttonupdown)
             if charc = 0 then
                 randint (charc, 1, 3)
+
+
+
             elsif x >= 100 and y >= CENTREY - 100 and x <= 500 and y <= CENTREY + 300 then
                 charc := 1
                 drawfillbox (100, CENTREY - 100, 500, CENTREY + 300, brightred)
                 Pic.Draw (charcWar, 120, CENTREY - 100, picMerge)
                 drawfillbox (CENTREX - 200, CENTREY - 100, CENTREX + 200, CENTREY + 300, blue)
+                Pic.Draw (charcMage, CENTREX - 200, CENTREY - 50, picMerge)
                 drawfillbox (maxx - 500, CENTREY - 100, maxx - 100, CENTREY + 300, green)
-                Pic.Draw (charcMage, CENTREX - 150, CENTREY - 100, picMerge)
-                Pic.Draw (charcRang, maxx - 420, CENTREY - 50, picMerge)
+                Pic.Draw (charcRang, maxx - 480, CENTREY - 5, picMerge)
+
+
+
             elsif x >= CENTREX - 200 and y >= CENTREY - 100 and x <= CENTREX + 200 and y <= CENTREY + 300 then
                 charc := 2
                 drawfillbox (CENTREX - 200, CENTREY - 100, CENTREX + 200, CENTREY + 300, brightblue)
-                Pic.Draw (charcMage, CENTREX - 150, CENTREY - 100, picMerge)
+                Pic.Draw (charcMage, CENTREX - 200, CENTREY - 50, picMerge)
                 drawfillbox (100, CENTREY - 100, 500, CENTREY + 300, red)
                 Pic.Draw (charcWar, 120, CENTREY - 100, picMerge)
                 drawfillbox (maxx - 500, CENTREY - 100, maxx - 100, CENTREY + 300, green)
-                Pic.Draw (charcRang, maxx - 420, CENTREY - 50, picMerge)
+                Pic.Draw (charcRang, maxx - 480, CENTREY - 5, picMerge)
+
+
+
             elsif x >= maxx - 500 and y >= CENTREY - 100 and x <= maxx - 100 and y <= CENTREY + 300 then
                 charc := 3
                 drawfillbox (maxx - 500, CENTREY - 100, maxx - 100, CENTREY + 300, brightgreen)
-                Pic.Draw (charcRang, maxx - 420, CENTREY - 50, picMerge)
+                Pic.Draw (charcRang, maxx - 480, CENTREY - 5, picMerge)
                 drawfillbox (100, CENTREY - 100, 500, CENTREY + 300, red)
                 Pic.Draw (charcWar, 120, CENTREY - 100, picMerge)
                 drawfillbox (CENTREX - 200, CENTREY - 100, CENTREX + 200, CENTREY + 300, blue)
-                Pic.Draw (charcMage, CENTREX - 150, CENTREY - 100, picMerge)
+                Pic.Draw (charcMage, CENTREX - 200, CENTREY - 50, picMerge)
+
+
+
             elsif x >= CENTREX - 100 and y >= 50 and x <= CENTREX + 100 and y <= 100 then
                 houseRoom := true
                 % Characters
@@ -833,12 +878,13 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                     charcWar := Pic.Scale (charcWar, 150, 200)
                     charcSpr := Sprite.New (charcWar)
                 elsif charc = 2 then
-                    charcMage := Pic.Scale (charcMage, 150, 150)
+                    charcMage := Pic.Scale (charcMage, 200, 119)
                     charcSpr := Sprite.New (charcMage)
                 elsif charc = 3 then
-                    charcRang := Pic.Scale (charcRang, 150, 150)
+                    charcRang := Pic.Scale (charcRang, 200, 129)
                     charcSpr := Sprite.New (charcRang)
                 end if
+
 
                 exit
             end if
@@ -963,7 +1009,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                 Input.KeyDown (chars)
                 if chars ('e') then
 
-                    
+
                     drawfillbox (CENTREX - 300, CENTREY + 150, CENTREX + 200, CENTREY + 300, 54)
                     Music.PlayFile ("Splash.mp3")
                     fish
@@ -1035,7 +1081,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                     end for
 
                     drawfillbox (CENTREX + 300, CENTREY + 150, CENTREX + 800, CENTREY + 300, green)
-                    Font.Draw ("Timber!!!", CENTREX + 320, CENTREY + 225, font3, 93)
+                    Font.Draw ("Timber!!!", CENTREX + 320, CENTREY + 225, font1, 93)
                     Music.PlayFile ("Chop.mp3")
                     chop
                     drawfillbox (CENTREX + 300, CENTREY + 150, CENTREX + 800, CENTREY + 300, green)
@@ -1127,7 +1173,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
         % Mob Health Resets
         bossHealth := 1000
         mobHealth1 := 100
-        mobHealth2 := 300
+        mobHealth2 := 400
         mobHealth3 := 600
         loop
             Input.KeyDown (chars)
@@ -1146,7 +1192,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
             delay (20)
             View.Update
             Sprite.SetPosition (charcSpr, x, y, true)
-            if x >= 100 and y >= maxy - 210 and x <= 160 and y <= maxy then
+            if x >= 100 and y >= maxy - 210 and x <= 160 and y <= maxy and mons1Death = true and mons3Death = true and mons2Death = true then
                 bbossRoom := true
                 exit
             end if
@@ -1163,14 +1209,17 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
 
 
             % Monster 1 (Big) ------------------------------------------------------------------------------------- BIG MONSTER
-            if x >= 50 and x <= 450 and y >= 50 and y <= 450 then
+            if x >= 50 and x <= 450 and y >= 50 and y <= 450 and mons1Death = false then
                 drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
-                Font.Draw ("Press E to fight", CENTREX - 250, CENTREY + 250, font3, 93)
+                Font.Draw ('Defeat all 3 monsters to face', CENTREX - 250, CENTREY + 340, font3, 93)
+                Font.Draw ('one of the 3 bosses.', CENTREX - 250, CENTREY + 310, font3, 93)
+                Font.Draw ('"You cannot hope to win."', CENTREX - 250, CENTREY + 250, font3, 93)
+                Font.Draw ("(Press E to fight)", CENTREX - 250, CENTREY + 220, font3, 93)
                 Input.KeyDown (chars)
                 if chars ('e') then
 
                     drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
-                    Font.Draw ("Spam E to fight!", CENTREX - 250, CENTREY + 250, font3, 93)
+                    Font.Draw ("Repeatedly press E to fight!", CENTREX - 250, CENTREY + 250, font3, 93)
                     timer2 := Time.Elapsed + 6000
                     playerDamage := 0
                     for i : 1 .. maxint
@@ -1190,6 +1239,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
 
 
                     end for
+                    drawfillbox (CENTREX - 300, maxy - 200, CENTREX + 200, maxy, 19)
                     attack
                     fightMob3
                     drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
@@ -1203,7 +1253,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                         Font.Draw ("Critical Hit!", CENTREX - 190, CENTREY + 270, font3, 92)
                     end if
                     Font.Draw ("You have done " + intstr (playerDamage) + " damage", CENTREX - 190, CENTREY + 240, font3, 92)
-                    Font.Draw ("Monster Health : " + intstr (mobHealth3), CENTREX - 190, CENTREY + 210, font3, brightred)
+                    Font.Draw ("Lidan-Gula Health : " + intstr (mobHealth3), CENTREX - 190, CENTREY + 210, font3, brightred)
                     if health <= 0 then
                         houseRoom := true
                         Sprite.Hide (monsSpr)
@@ -1220,6 +1270,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                         Font.Draw ("Fighting Level : " + intstr (fightLevel), CENTREX - 190, CENTREY + 300, font3, 92)
                         mobCount += 1
                         hpBar
+                        mons1Death := true
                     end if
                     delay (3000)
                     Input.Pause
@@ -1228,14 +1279,17 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
 
 
             % Monster 2 (Med) ------------------------------------------------------------------------------------- MEDIUM MONSTER
-            if x >= CENTREX - 100 and x <= CENTREX + 100 and y >= CENTREY - 100 and y <= CENTREY + 100 then
+            if x >= CENTREX - 100 and x <= CENTREX + 100 and y >= CENTREY - 100 and y <= CENTREY + 100 and mons2Death = false then
                 drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
-                Font.Draw ("Press E to fight", CENTREX - 250, CENTREY + 250, font3, 93)
+                Font.Draw ('Defeat all 3 monsters to face', CENTREX - 250, CENTREY + 340, font3, 93)
+                Font.Draw ('one of the 3 bosses.', CENTREX - 250, CENTREY + 310, font3, 93)
+                Font.Draw ('"Death awaits you."', CENTREX - 250, CENTREY + 250, font3, 93)
+                Font.Draw ("(Press E to fight)", CENTREX - 250, CENTREY + 220, font3, 93)
                 Input.KeyDown (chars)
                 if chars ('e') then
 
                     drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
-                    Font.Draw ("Spam E to fight!", CENTREX - 250, CENTREY + 250, font3, 93)
+                    Font.Draw ("Repeatedly press E to fight!", CENTREX - 250, CENTREY + 250, font3, 93)
                     timer2 := Time.Elapsed + 3500
                     playerDamage := 0
                     for i : 1 .. maxint
@@ -1255,6 +1309,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
 
 
                     end for
+                    drawfillbox (CENTREX - 300, maxy - 200, CENTREX + 200, maxy, 19)
                     attack
                     fightMob2
                     drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
@@ -1268,7 +1323,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                         Font.Draw ("Critical Hit!", CENTREX - 190, CENTREY + 270, font3, 92)
                     end if
                     Font.Draw ("You have done " + intstr (playerDamage) + " damage", CENTREX - 190, CENTREY + 240, font3, 92)
-                    Font.Draw ("Monster Health : " + intstr (mobHealth2), CENTREX - 190, CENTREY + 210, font3, brightred)
+                    Font.Draw ("Ijiraq Health : " + intstr (mobHealth2), CENTREX - 190, CENTREY + 210, font3, brightred)
                     if health <= 0 then
                         houseRoom := true
                         Sprite.Hide (monsSpr)
@@ -1285,6 +1340,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                         Font.Draw ("Fighting Level : " + intstr (fightLevel), CENTREX - 190, CENTREY + 300, font3, red)
                         mobCount += 1
                         hpBar
+                        mons2Death := true
                     end if
                     delay (3000)
                     Input.Pause
@@ -1293,14 +1349,17 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
 
 
             % Monster 3 (Small) ------------------------------------------------------------------------------------- SMALL MONSTER
-            if x >= maxx - 275 and x <= maxx - 125 and y >= CENTREY - 175 and y <= CENTREY - 25 then
+            if x >= maxx - 275 and x <= maxx - 125 and y >= CENTREY - 175 and y <= CENTREY - 25 and mons3Death = false then
                 drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
-                Font.Draw ("Press E to fight", CENTREX - 250, CENTREY + 250, font3, 93)
+                Font.Draw ('Defeat all 3 monsters to face', CENTREX - 250, CENTREY + 340, font3, 93)
+                Font.Draw ('one of the 3 bosses.', CENTREX - 250, CENTREY + 310, font3, 93)
+                Font.Draw ('"You think you can beat me?"', CENTREX - 250, CENTREY + 250, font3, 93)
+                Font.Draw ("(Press E to fight)", CENTREX - 250, CENTREY + 220, font3, 93)
                 Input.KeyDown (chars)
                 if chars ('e') then
 
                     drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
-                    Font.Draw ("Spam E to fight", CENTREX - 250, CENTREY + 250, font3, 93)
+                    Font.Draw ("Repeatedly press E to fight!", CENTREX - 250, CENTREY + 250, font3, 93)
                     timer2 := Time.Elapsed + 2500
                     playerDamage := 0
                     for i : 1 .. maxint
@@ -1320,11 +1379,12 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
 
 
                     end for
+                    drawfillbox (CENTREX - 300, maxy - 200, CENTREX + 200, maxy, 19)
                     attack
                     fightMob1
                     drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
                     if playerDamage <= 13 then
-                        Font.Draw ("You have hit the arm!", CENTREX - 190, CENTREY + 270, font3, 92)
+                        Font.Draw ("You have hit its arm!", CENTREX - 190, CENTREY + 270, font3, 92)
                     elsif playerDamage <= 15 then
                         Font.Draw ("You have hit the chest!", CENTREX - 190, CENTREY + 270, font3, 92)
                     elsif playerDamage <= 19 then
@@ -1333,7 +1393,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                         Font.Draw ("Critical Hit!", CENTREX - 190, CENTREY + 270, font3, 92)
                     end if
                     Font.Draw ("You have done " + intstr (playerDamage) + " damage", CENTREX - 190, CENTREY + 240, font3, 92)
-                    Font.Draw ("Monster Health : " + intstr (mobHealth1), CENTREX - 190, CENTREY + 210, font3, brightred)
+                    Font.Draw ("Wolf Health : " + intstr (mobHealth1), CENTREX - 190, CENTREY + 210, font3, brightred)
                     if health <= 0 then
                         houseRoom := true
                         Sprite.Hide (monsSpr)
@@ -1350,6 +1410,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                         Font.Draw ("Fighting Level : " + intstr (fightLevel), CENTREX - 190, CENTREY + 300, font3, 92)
                         mobCount += 1
                         hpBar
+                        mons3Death := true
                     end if
                     delay (3000)
                     Input.Pause
@@ -1361,9 +1422,28 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
 
 
     % --------------------------------------------------------------------- BOSS ROOM --------------
-    if bbossRoom = true then
+    if bbossRoom = true and mons1Death = true and mons3Death = true and mons2Death = true then
         bbossRoom := false
+        mons1Death := false
+        mons2Death := false
+        mons3Death := false
         bossRoom
+        % Health Reset
+        if totalFight >= 250 and totalFight < 350 then
+            fightLevel := 2
+            health := 200
+        elsif totalFight >= 350 and totalFight < 550 then
+            fightLevel := 3
+            health := 300
+        elsif totalFight >= 550 and totalFight < 800 then
+            fightLevel := 4
+            health := 500
+        elsif totalFight >= 800 then
+            fightLevel := 5
+            health := 750
+        else
+            health := 100
+        end if
         hpBar
         loop
             Input.KeyDown (chars)
@@ -1384,7 +1464,15 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
             Sprite.SetPosition (charcSpr, x, y, true)
             if y <= maxy and x <= CENTREX - 100 then
                 drawfillbox (CENTREX - 300, maxy - 200, CENTREX + 200, maxy, 19)
-                Font.Draw ("Press E to challenge the boss", CENTREX - 250, maxy - 150, font3, 93)
+                Font.Draw ('"No escape..."', CENTREX - 250, maxy - 90, font3, 93)
+                if randBoss = 1 then
+                    Font.Draw ('"Suffer and perish."', CENTREX - 250, maxy - 120, font3, 93)
+                elsif randBoss = 2 then
+                    Font.Draw ('"You cannot hope to live."', CENTREX - 250, maxy - 120, font3, 93)
+                else
+                    Font.Draw ('"Savour your last moments."', CENTREX - 250, maxy - 120, font3, 93)
+                end if
+                Font.Draw ("Press E fight for your life!", CENTREX - 250, maxy - 150, font3, 93)
                 Input.KeyDown (chars)
                 if chars ('e') then
                     drawfillbox (CENTREX - 300, maxy - 200, CENTREX + 200, maxy, 19)
@@ -1436,7 +1524,9 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                         Font.Draw ("Congratulations Champion! You have earned " + intstr (fightXP), CENTREX - 190, maxy - 270, font3, 92)
                         bossAchieve := true
                         Music.PlayFile ("bossDeath.mp3")
+                        Music.PlayFile ("Victory.mp3")
                     end if
+
                     delay (3000)
                     Input.Pause
                 end if
