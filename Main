@@ -9,7 +9,7 @@
 % Laptop Screen Resoltion : 1366 x 768
 
 % Screen Setting + Resolution + Centre Variables ------------------------------------------ Screen Setting
-setscreen ("graphics:1366;768")
+setscreen ("graphics:max;max")
 var CENTREX : int := maxx div 2
 var CENTREY : int := maxy div 2
 % Fonts ----------------------------------------------------------------------------------- FONTS
@@ -74,7 +74,7 @@ boss3Pic := Pic.Scale (boss3Pic, 500, 500)
 
 % Monsters
 mons1Pic := Pic.FileNew ("mons1.gif")
-mons1Pic := Pic.Scale (mons1Pic, 400, 400)
+mons1Pic := Pic.Scale (mons1Pic, 400, 300)
 monsSpr := Sprite.New (mons1Pic)
 mons2Pic := Pic.FileNew ("mons2.gif")
 mons2Pic := Pic.Scale (mons2Pic, 400, 216)
@@ -826,10 +826,10 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
     % ------------------------------------------------------------------- END OF START MENU------------------------------------
     if characterRoom = true then
         characterRoom := false
-        characterCreate
-        charcWar := Pic.Scale (charcWar, 300, 400)
+        charcWar := Pic.Scale (charcWar, 400, 300)
         charcMage := Pic.Scale (charcMage, 400, 248)
         charcRang := Pic.Scale (charcRang, 400, 258)
+        characterCreate
         % Character Selection
         loop % If User clicks a character, it highlights the box and darkens the others
             buttonwait ("down", x, y, buttonNumber, buttonupdown)
@@ -841,7 +841,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
             elsif x >= 100 and y >= CENTREY - 100 and x <= 500 and y <= CENTREY + 300 then
                 charc := 1
                 drawfillbox (100, CENTREY - 100, 500, CENTREY + 300, brightred)
-                Pic.Draw (charcWar, 120, CENTREY - 100, picMerge)
+                Pic.Draw (charcWar, 90, CENTREY - 60, picMerge)
                 drawfillbox (CENTREX - 200, CENTREY - 100, CENTREX + 200, CENTREY + 300, blue)
                 Pic.Draw (charcMage, CENTREX - 200, CENTREY - 50, picMerge)
                 drawfillbox (maxx - 500, CENTREY - 100, maxx - 100, CENTREY + 300, green)
@@ -854,7 +854,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                 drawfillbox (CENTREX - 200, CENTREY - 100, CENTREX + 200, CENTREY + 300, brightblue)
                 Pic.Draw (charcMage, CENTREX - 200, CENTREY - 50, picMerge)
                 drawfillbox (100, CENTREY - 100, 500, CENTREY + 300, red)
-                Pic.Draw (charcWar, 120, CENTREY - 100, picMerge)
+                Pic.Draw (charcWar, 90, CENTREY - 100, picMerge)
                 drawfillbox (maxx - 500, CENTREY - 100, maxx - 100, CENTREY + 300, green)
                 Pic.Draw (charcRang, maxx - 480, CENTREY - 5, picMerge)
 
@@ -865,7 +865,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                 drawfillbox (maxx - 500, CENTREY - 100, maxx - 100, CENTREY + 300, brightgreen)
                 Pic.Draw (charcRang, maxx - 480, CENTREY - 5, picMerge)
                 drawfillbox (100, CENTREY - 100, 500, CENTREY + 300, red)
-                Pic.Draw (charcWar, 120, CENTREY - 100, picMerge)
+                Pic.Draw (charcWar, 90, CENTREY - 60, picMerge)
                 drawfillbox (CENTREX - 200, CENTREY - 100, CENTREX + 200, CENTREY + 300, blue)
                 Pic.Draw (charcMage, CENTREX - 200, CENTREY - 50, picMerge)
 
@@ -1192,7 +1192,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
             delay (20)
             View.Update
             Sprite.SetPosition (charcSpr, x, y, true)
-            if x >= 100 and y >= maxy - 210 and x <= 160 and y <= maxy and mons1Death = true and mons3Death = true and mons2Death = true then
+            if x >= 100 and y >= maxy - 210 and x <= 160 then %and y <= maxy and mons1Death = true and mons3Death = true and mons2Death = true then
                 bbossRoom := true
                 exit
             end if
@@ -1422,7 +1422,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
 
 
     % --------------------------------------------------------------------- BOSS ROOM --------------
-    if bbossRoom = true and mons1Death = true and mons3Death = true and mons2Death = true then
+    if bbossRoom = true then % and mons1Death = true and mons3Death = true and mons2Death = true then
         bbossRoom := false
         mons1Death := false
         mons2Death := false
