@@ -1,56 +1,76 @@
-% FinalProjectBV7.t
+% FinalProjectBV8.t
 % The Final Project : Role Playing Game
 % Game : The Journey to Oblivion
 % Albert Quon & Kyler Lin
 % Initialization Date : 5/18/2017
-% Current Date : 6/6/2017
-% Current Version : Beta 7 - Interaction Stages
+% Current Date : 6/10/2017
+% Current Version : Beta 8 - Interaction Stages
 % Use lunapic.com to use transparent pictures
 % Laptop Screen Resoltion : 1366 x 768
 
 % Screen Setting + Resolution + Centre Variables ------------------------------------------ Screen Setting
-setscreen ("graphics:max;max")
+setscreen ("graphics:1366;768")
 var CENTREX : int := maxx div 2
 var CENTREY : int := maxy div 2
+
+
 % Fonts ----------------------------------------------------------------------------------- FONTS
-var font1, font2, font3 : int
+var font1, font2, font3, font4, font5 : int
 font1 := Font.New ("Nueva Std:40")
 font2 := Font.New ("Agency FB:30")
 font3 := Font.New ("Nueva Std:20")
+font4 := Font.New ("Candara:12")
+
 % Position Variables ---------------------------------------------------------------------- Position Variables
 var x, y, buttonNumber, buttonupdown : int
+
+
 % Arrays ---------------------------------------------------------------------------------- Arrays
 var rareItems : array 1 .. 10 of string
 var chars : array char of boolean
+
+
 % Pictures -------------------------------------------------------------------------------- Pictures
 var pic1, pic2, pic3 : int
 var housePic, cavePic, mineShaftPic, bossCavePic, mons1Pic, mons2Pic, mons3Pic : int
 var mineOre, mineOre2 : int
 var bossPic, boss2Pic, boss3Pic : int
 
+
 bossCavePic := Pic.FileNew ("bosscave.gif")
 bossCavePic := Pic.Scale (bossCavePic, maxx, maxy)
+
 
 mineOre := Pic.FileNew ("mineore.gif")
 mineOre := Pic.Scale (mineOre, 200, 200)
 mineOre2 := Pic.FileNew ("mineOre2.gif")
 mineOre2 := Pic.Scale (mineOre2, 200, 200)
 
-% Boolean -------------------------------------------------------------------------------------------------------------------------- Boolean
-var timer, timer2, count : int := 0
+
+% Boolean + Characters -------------------------------------------------------------------------------------------------------------------------- Boolean
+var timer, timer2 : int := 0
 var lastkeydown : array char of boolean
 var ch : char
+
 
 % Boolean Variables for loops ---------------------------------------------------------------------- Boolean Variables
 var startMenuB : boolean := true % \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ TEMPORARY
 var houseRoom, oceanRoom, caveRoom, bbossRoom, mainMapRoom, forestRoom, mineRoom, mons1Death, mons2Death, mons3Death : boolean := false
 var characterRoom, leadboardB, exitMenuB, instructB, achieveB : boolean := false
+
+
 % Achievements
 var fishAchieve, fightAchieve, chopAchieve, bossAchieve, mineAchieve : boolean := false
+
+
 % Character Pictures ------------------------------------------------------------------------- Character Pictures +  Mobs
 var charcWar, charcMage, charcRang : int
+
+
 % Sprites
 var charcSpr, bossSpr, monsSpr, mons2Spr, mons3Spr : int
+
+
 
 % Characters
 % Warrior, Mage, Ranger + Default
@@ -63,6 +83,7 @@ charcRang := Pic.Scale (charcRang, 400, 258)
 charcSpr := Sprite.New (charcWar)
 
 
+
 % Bosses
 bossPic := Pic.FileNew ("boss.gif")
 bossPic := Pic.Scale (bossPic, 500, 500)
@@ -70,6 +91,7 @@ boss2Pic := Pic.FileNew ("boss2.gif")
 boss2Pic := Pic.Scale (boss2Pic, 500, 500)
 boss3Pic := Pic.FileNew ("boss3.gif")
 boss3Pic := Pic.Scale (boss3Pic, 500, 500)
+
 
 
 % Monsters
@@ -84,12 +106,17 @@ mons3Pic := Pic.Scale (mons3Pic, 240, 180)
 mons3Spr := Sprite.New (mons3Pic)
 
 
+
 % Gameplay Variables -------------------------------------------------------------------------------------------Gameplay Variables
+
+
 
 % Enemy Health
 var mobHealth1, mobHealth2, mobHealth3, bossHealth : int
 % Levels
 var mineLevel, chopLevel, fishLevel, fightLevel, charc : int := 1
+
+
 % Counts
 var health, woodCount, fishCount, oreCount, itemCount, deathCount : int := 0
 % Total XP
@@ -100,8 +127,12 @@ var achieveScore : int := 0
 var mobCount : int := 0
 % Boss Count
 var bossCount : int := 0
+
+
 % Random Variables
-var mineXP, fishXP, chopXP, fightXP, playerDamage, mobDamage, randItem, randSpell, randBoss : int := 0
+var mineXP, fishXP, chopXP, fightXP, playerDamage, mobDamage, randItem, randSpell, randBoss, randPlay : int := 0
+
+
 % Health, Levels, and Interaction
 bossHealth := 1000
 mobHealth1 := 100
@@ -113,8 +144,11 @@ mobHealth3 := 600
 % Functions/Subprograms
 % User Menu -------------------------------------------------------------------------------------------------- User Menu
 
+
+
 % Start Menu -------------------------------------------------------------------------------------------------- START
 procedure startMenu
+
 
     cls
     pic1 := Pic.FileNew ("startmenupic.jpg")
@@ -127,9 +161,14 @@ procedure startMenu
     Font.Draw ("Highscores", CENTREX - 84, 200, font2, 0)
     Font.Draw ("Exit Game", CENTREX - 75, 100, font2, 0)
 
+
+
 end startMenu
 % Instructions ------------------------------------------------------------------------------------------------ INSTRUCTIONS
+
+
 procedure instruct
+
 
     cls
     Font.Draw ("Instructions", CENTREX - 85, CENTREY + 250, font1, black)
@@ -144,28 +183,44 @@ procedure instruct
     Font.Draw ("- Collect rare items", CENTREX - 570, CENTREY - 240, font2, black)
     Font.Draw ("- Train your character", CENTREX - 570, CENTREY - 280, font2, black)
     Font.Draw ("- Have fun", CENTREX - 570, CENTREY - 320, font2, black)
-    drawfillbox (CENTREX + 490, CENTREY - 350, CENTREX + 570, CENTREY - 270, green)
+    drawfillbox (maxx - 200, 0, maxx, 100, green)
+    Font.Draw ("Play Now!", maxx - 160, 60, font3, white)
+
 
 end instruct
+
+
 % Leaderboard ------------------------------------------------------------------------------------------------ LEADERBOARD
+
+
 procedure leadBoard
+
+
     cls
     Font.Draw ("Highscores", CENTREX - 85, CENTREY + 250, font1, black)
     Font.Draw ("1. Kyler......................................................................................................................19890", CENTREX - 400, CENTREY + 180, font2, black)
     Font.Draw ("2. Albert....................................................................................................................18203", CENTREX - 400, CENTREY, font2, black)
     Font.Draw ("3. Kelvin....................................................................................................................200", CENTREX - 400, CENTREY - 180, font2, black)
+
+
 end leadBoard
+
+
 % Achievements ------------------------------------------------------------------------------------------------ ACHIEVEMENTS
+
+
 procedure achieve
+
+
     %Achievements
 
     cls
     Font.Draw ("Achievements", CENTREX - 85, CENTREY + 250, font1, black)
     if itemCount = 3 then
-        Font.Draw ("Item Collector: Collect 3 rare items (10)", CENTREX - 570, CENTREY + 180, font2, brightgreen)
-        achieveScore += 10
+        Font.Draw ("Item Collector: Collect 3 rare items (50)", CENTREX - 570, CENTREY + 180, font2, brightgreen)
+        achieveScore += 50
     else
-        Font.Draw ("Item Collector: Collect 3 rare items (10)", CENTREX - 570, CENTREY + 180, font2, black)
+        Font.Draw ("Item Collector: Collect 3 rare items (50)", CENTREX - 570, CENTREY + 180, font2, black)
     end if
 
     if chopLevel = 5 then
@@ -220,7 +275,10 @@ procedure achieve
     Font.Draw ("Your total achievement score is " + intstr (achieveScore), CENTREX - 570, CENTREY - 220, font2, black)
 
 
+
 end achieve
+
+
 % Exit + Credits ---------------------------------------------------------------------------------------- EXIT
 procedure exitMenu
     % Exit Menu
@@ -239,8 +297,12 @@ procedure exitMenu
 
 end exitMenu
 %  ------------------------------------------------------------------------------------------------ IN-GAME PROCEDURES ------------------------------------------------------------------------------
+
+
 % Health
 procedure hpBar
+
+
     if health <= 0 then
         drawfillbox (maxx - 230, 0, maxx, 80, brightred)
     else
@@ -249,9 +311,15 @@ procedure hpBar
     Font.Draw ("HP: " + intstr (health), maxx - 200, 20, font1, white)
     % Note to change for HP changes, just add the procedure again
     Font.Draw ("Deaths : " + intstr (deathCount), maxx - 200, 90, font3, red)
+
+
 end hpBar
 
+
+
 % House ---------------------------------------------------------------------------------------------- HOUSE
+
+
 procedure house
 
     x := CENTREX - 100
@@ -288,7 +356,11 @@ procedure house
     Font.Draw ("MENU", maxx - 190, maxy - 150, font3, white)
 
 end house
+
+
 % Cave --------------------------------------------------------------------------- CAVE
+
+
 procedure cave
 
     % Character Sprite Position
@@ -313,8 +385,13 @@ procedure cave
     Sprite.SetPosition (mons3Spr, maxx - 200, CENTREY - 100, true)
     % Fight Statements
     hpBar
+
 end cave
+
+
 % Boss Room ---------------------------------------------------------------------- B ROOM
+
+
 procedure bossRoom
 
     % Character Sprite Position
@@ -339,9 +416,13 @@ procedure bossRoom
     end if
     Sprite.SetPosition (bossSpr, 250, 250, true)
 
-    % Fight Statements
+
 end bossRoom
+
+
 % Mineshaft --------------------------------------------------------------------------- MINESHAFT
+
+
 procedure mineshaft
 
     cls
@@ -364,12 +445,16 @@ procedure mineshaft
     Pic.Draw (mineOre, 200, 200, picMerge)
     Pic.Draw (mineOre, 400, 400, picMerge)
     %Pic.Draw (mineOre2, maxx - 300, CENTREY - 300, picMerge)
-
-    % Mining Statements
+    % Mine Level
+    drawfillbox (maxx - 340, 0, maxx, 120, 18)
+    Font.Draw ("Mining Level : " + intstr (chopLevel), maxx - 300, 50, font3, 24)
 
 end mineshaft
 
+
 % Fishing Ocean ------------------------------------------------------------------------- OCEAN
+
+
 procedure ocean
 
     cls
@@ -387,17 +472,28 @@ procedure ocean
     drawfillbox (CENTREX - 300, CENTREY - 150, CENTREX - 250, 0, 138)
     % Sun
     drawfillarc (maxx, maxy, 200, 200, 180, 270, yellow)
-    % Ripples to show fish
-    drawoval (CENTREX + 100, 100, 50, 50, 53)
+    % Ripples to show "fish"
+    drawoval (CENTREX + 100, 100, 35, 35, 53)
     drawoval (CENTREX + 100, 100, 20, 20, 53)
     drawoval (CENTREX + 100, 100, 5, 5, 53)
     drawoval (CENTREX + 100, 100, 30, 30, 53)
+    drawoval (CENTREX + 100, 100, 45, 45, 53)
 
-    % Fishing statements
+    drawoval (CENTREX + 280, 80, 35, 35, 53)
+    drawoval (CENTREX + 280, 80, 20, 20, 53)
+    drawoval (CENTREX + 280, 80, 10, 10, 53)
+    drawoval (CENTREX + 280, 80, 30, 30, 53)
+    drawoval (CENTREX + 280, 80, 45, 45, 53)
+    % Fish Level
+    drawfillbox (maxx - 340, 0, maxx, 120, 54)
+    Font.Draw ("Fishing Level : " + intstr (fishLevel), maxx - 300, 50, font3, 53)
 
 end ocean
 
+
 % Forest -------------------------------------------------------------------------------- FOREST
+
+
 procedure forest
 
     cls
@@ -438,11 +534,17 @@ procedure forest
     drawfillbox (CENTREX - 200, 50, CENTREX - 100, CENTREY - 100, 186)
     drawfilloval (CENTREX - 150, CENTREY - 100, 150, 150, 119)
 
-    % Interaction Statements
+    % Chopping Level
+    drawfillbox (maxx - 340, 0, maxx, 120, green)
+    Font.Draw ("Woodcutting Level : " + intstr (chopLevel), maxx - 300, 50, font3, 93)
+
 
 end forest
 
+
 % Main Map ---------------------------------------------------------------------------- MAIN MAP ------------------------------------------------------------
+
+
 procedure mainMap
 
     cls
@@ -490,7 +592,10 @@ procedure mainMap
 
 end mainMap
 
+
 % Character Design Background  ----------------------------------------------------------------------------  MENU --------------------------------------- CHARC DESIGN
+
+
 procedure characterCreate
 
     cls
@@ -498,13 +603,14 @@ procedure characterCreate
     drawfillbox (100, CENTREY - 100, 500, CENTREY + 300, red)
     drawfillbox (CENTREX - 200, CENTREY - 100, CENTREX + 200, CENTREY + 300, blue)
     drawfillbox (maxx - 500, CENTREY - 100, maxx - 100, CENTREY + 300, green)
-    Pic.Draw (charcWar, 120, CENTREY - 100, picMerge)
+    Pic.Draw (charcWar, 90, CENTREY - 50, picMerge)
     Pic.Draw (charcMage, CENTREX - 200, CENTREY - 50, picMerge)
-    Pic.Draw (charcRang, maxx - 480, CENTREY - 5, picMerge)
+    Pic.Draw (charcRang, maxx - 480, CENTREY - 50, picMerge)
     drawfillbox (CENTREX - 100, 50, CENTREX + 100, 100, brightgreen)
     Font.Draw ("START", CENTREX - 50, 70, font3, 0)
 
 end characterCreate
+
 
 % Gameplay ----------------------------------------------------------------------------------------- GAMEPLAY
 
@@ -515,12 +621,20 @@ procedure mlevelUp
 
     if totalMine >= 100 and totalMine < 200 then
         mineLevel := 2
+
+
     elsif totalMine >= 200 and totalMine < 300 then
         mineLevel := 3
+
+
     elsif totalMine >= 300 and totalMine < 400 then
         mineLevel := 4
-    elsif totalMine >= 400 and totalMine < 500 then
+
+
+    elsif totalMine >= 450 then
         mineLevel := 5
+
+
     end if
 
 end mlevelUp
@@ -535,7 +649,7 @@ procedure mine
     elsif oreCount <= 20 then
         Font.Draw ("You have mined some copper!", CENTREX - 190, CENTREY + 270, font3, 92)
         randint (mineXP, 7, 8)
-    elsif oreCount <= 35 then
+    elsif oreCount <= 33 then
         Font.Draw ("You have mined some iron!", CENTREX - 190, CENTREY + 270, font3, 92)
         mineXP := 9
     else
@@ -554,7 +668,7 @@ procedure fishlevelUp
         fishLevel := 3
     elsif totalFish >= 300 and totalFish < 400 then
         fishLevel := 4
-    elsif totalFish >= 400 and totalFish < 500 then
+    elsif totalFish >= 450 then
         fishLevel := 5
     end if
 end fishlevelUp
@@ -590,7 +704,7 @@ procedure chlevelUp
         chopLevel := 3
     elsif totalChop >= 300 and totalChop < 400 then
         chopLevel := 4
-    elsif totalChop >= 400 and totalChop < 500 then
+    elsif totalChop >= 400 then
         chopLevel := 5
     end if
 end chlevelUp
@@ -605,7 +719,7 @@ procedure chop
     elsif woodCount <= 30 then
         Font.Draw ("You have cut down half an oak log!", CENTREX + 320, CENTREY + 260, font3, 92)
         randint (chopXP, 6, 8)
-    elsif woodCount <= 40 then
+    elsif woodCount <= 33 then
         Font.Draw ("You cut down an oak log!", CENTREX + 320, CENTREY + 260, font3, 92)
         chopXP := 9
     else
@@ -638,7 +752,7 @@ procedure flevelUp
 
 end flevelUp
 
-procedure fightMob1
+procedure fightMob1  % Small monster
 
     randint (fightXP, 10, 20)
     randint (mobDamage, 2, 10)
@@ -649,7 +763,7 @@ procedure fightMob1
 
 end fightMob1
 
-procedure fightMob2
+procedure fightMob2  % Medium Monster
 
     randint (fightXP, 20, 30)
     randint (mobDamage, 10, 20)
@@ -660,10 +774,10 @@ procedure fightMob2
 
 end fightMob2
 
-procedure fightMob3
+procedure fightMob3  % Big Monster
 
     randint (fightXP, 40, 60)
-    randint (mobDamage, 30, 40)
+    randint (mobDamage, 20, 35)
     totalFight := totalFight + fightXP
     health := health - mobDamage
     mobHealth3 := mobHealth3 - playerDamage
@@ -672,6 +786,7 @@ procedure fightMob3
 end fightMob3
 
 procedure attack
+
     if charc = 1 then
         Music.PlayFile ("Fight.mp3")
     elsif charc = 2 then
@@ -686,6 +801,7 @@ procedure attack
     else
         Music.PlayFile ("Arrow.mp3")
     end if
+    
 end attack
 % Bosses ------------------------------------------------------------------------ BOSS
 
@@ -708,11 +824,35 @@ procedure bossFight
 end bossFight
 
 % Rare Items
-procedure rItem
+procedure rWoodItem
+
     randint (randItem, 1, 50)
-end rItem
-
-
+    if randItem = 25 then
+        drawfillbox (maxx - 220, CENTREY - 30, maxx, CENTREY + 30, blue)
+        Font.Draw ("You found a rare sapling!", maxx - 300, CENTREY, font4, yellow)
+        chopXP += 100
+        itemCount += 1
+    end if
+    
+end rWoodItem
+procedure rFishItem
+    randint (randItem, 1, 50)
+    if randItem = 25 then
+        drawfillbox (maxx - 220, CENTREY - 30, maxx, CENTREY + 30, blue)
+        Font.Draw ("You found a rare goldfish!", maxx - 300, CENTREY, font4, yellow)
+        fishXP += 100
+        itemCount += 1
+    end if
+end rFishItem
+procedure rMineItem
+    randint (randItem, 1, 50)
+    if randItem = 25 then
+        drawfillbox (maxx - 220, CENTREY - 30, maxx, CENTREY + 30, blue)
+        Font.Draw ("You found a diamond!", maxx - 300, CENTREY, font4, yellow)
+        mineXP += 100
+        itemCount += 1
+    end if
+end rMineItem
 
 
 
@@ -779,6 +919,10 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                 startMenuB := true
                 exit
             end if
+            if x >= maxx - 200 and x <= maxx and y >= 0 and y <= 100 then
+                characterRoom := true
+                exit
+            end if
         end loop
     end if
 
@@ -831,6 +975,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
         charcRang := Pic.Scale (charcRang, 400, 258)
         characterCreate
         % Character Selection
+        
         loop % If User clicks a character, it highlights the box and darkens the others
             buttonwait ("down", x, y, buttonNumber, buttonupdown)
             if charc = 0 then
@@ -841,11 +986,11 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
             elsif x >= 100 and y >= CENTREY - 100 and x <= 500 and y <= CENTREY + 300 then
                 charc := 1
                 drawfillbox (100, CENTREY - 100, 500, CENTREY + 300, brightred)
-                Pic.Draw (charcWar, 90, CENTREY - 60, picMerge)
+                Pic.Draw (charcWar, 90, CENTREY - 50, picMerge)
                 drawfillbox (CENTREX - 200, CENTREY - 100, CENTREX + 200, CENTREY + 300, blue)
                 Pic.Draw (charcMage, CENTREX - 200, CENTREY - 50, picMerge)
                 drawfillbox (maxx - 500, CENTREY - 100, maxx - 100, CENTREY + 300, green)
-                Pic.Draw (charcRang, maxx - 480, CENTREY - 5, picMerge)
+                Pic.Draw (charcRang, maxx - 480, CENTREY - 50, picMerge)
 
 
 
@@ -854,28 +999,29 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                 drawfillbox (CENTREX - 200, CENTREY - 100, CENTREX + 200, CENTREY + 300, brightblue)
                 Pic.Draw (charcMage, CENTREX - 200, CENTREY - 50, picMerge)
                 drawfillbox (100, CENTREY - 100, 500, CENTREY + 300, red)
-                Pic.Draw (charcWar, 90, CENTREY - 100, picMerge)
+                Pic.Draw (charcWar, 90, CENTREY - 50, picMerge)
                 drawfillbox (maxx - 500, CENTREY - 100, maxx - 100, CENTREY + 300, green)
-                Pic.Draw (charcRang, maxx - 480, CENTREY - 5, picMerge)
+                Pic.Draw (charcRang, maxx - 480, CENTREY - 50, picMerge)
 
 
 
             elsif x >= maxx - 500 and y >= CENTREY - 100 and x <= maxx - 100 and y <= CENTREY + 300 then
                 charc := 3
                 drawfillbox (maxx - 500, CENTREY - 100, maxx - 100, CENTREY + 300, brightgreen)
-                Pic.Draw (charcRang, maxx - 480, CENTREY - 5, picMerge)
+                Pic.Draw (charcRang, maxx - 480, CENTREY - 50, picMerge)
                 drawfillbox (100, CENTREY - 100, 500, CENTREY + 300, red)
-                Pic.Draw (charcWar, 90, CENTREY - 60, picMerge)
+                Pic.Draw (charcWar, 90, CENTREY - 50, picMerge)
                 drawfillbox (CENTREX - 200, CENTREY - 100, CENTREX + 200, CENTREY + 300, blue)
                 Pic.Draw (charcMage, CENTREX - 200, CENTREY - 50, picMerge)
 
 
 
             elsif x >= CENTREX - 100 and y >= 50 and x <= CENTREX + 100 and y <= 100 then
+                Music.PlayFile ("start.mp3")
                 houseRoom := true
-                % Characters
+                % Assigns the picture to the sprite
                 if charc = 1 then
-                    charcWar := Pic.Scale (charcWar, 150, 200)
+                    charcWar := Pic.Scale (charcWar, 200, 150)
                     charcSpr := Sprite.New (charcWar)
                 elsif charc = 2 then
                     charcMage := Pic.Scale (charcMage, 200, 119)
@@ -895,6 +1041,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
 
 
     %--------------------------------------------------------------------HOUSE -----------------------
+    
     if houseRoom = true then
         houseRoom := false
         house
@@ -928,10 +1075,12 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
             end if
         end loop
     end if
+    
     % end of house ---------------------------------------------------------------------------------------------
 
 
     % ------------------------------------------------------------------main Map -------------------------------
+    
     if mainMapRoom = true then
         mainMapRoom := false
         mainMap
@@ -970,6 +1119,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
             end if
         end loop
     end if
+    
     % --------------------------------------------------------------------- END OF MAIN MAP --------------
 
 
@@ -1003,6 +1153,8 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
             end if
             % Interaction, FISHING!! ----------------------------------------------------------------------------------- FISHING
             if x >= CENTREX - 150 and y <= maxy and x <= CENTREX + 100 then
+
+
                 drawfillbox (CENTREX - 300, CENTREY + 150, CENTREX + 200, CENTREY + 300, 54)
                 Font.Draw ("Press E to fish", CENTREX - 250, CENTREY + 225, font3, 93)
                 fishAchieve := true
@@ -1011,15 +1163,27 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
 
 
                     drawfillbox (CENTREX - 300, CENTREY + 150, CENTREX + 200, CENTREY + 300, 54)
+                    Font.Draw ("What will you fish out today?", CENTREX - 250, CENTREY + 225, font3, 92)
                     Music.PlayFile ("Splash.mp3")
+                    drawfillbox (CENTREX - 300, CENTREY + 150, CENTREX + 200, CENTREY + 300, 54)
                     fish
+                    
+                    % Rare Item
+                    rFishItem
+                    
                     Font.Draw ("You have gained " + intstr (fishXP) + " fishing XP", CENTREX - 190, CENTREY + 210, font3, 92)
-                    Font.Draw ("Fishing Level : " + intstr (fishLevel), CENTREX - 190, CENTREY + 180, font3, 92)
+                    % Fish Level
+                    drawfillbox (maxx - 340, 0, maxx, 120, 54)
+                    Font.Draw ("Fishing Level : " + intstr (fishLevel), maxx - 300, 50, font3, 53)
                     delay (2000)
                     Input.Pause
+
                 end if
+
             end if
+
         end loop
+
     end if
     % --------------------------------------------------------------------- END OF OCEAN --------
 
@@ -1052,44 +1216,128 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                 exit
             end if
             % Interaction, Wood Cutting!! --------------------------------------------------------------------------- WOOD CUTTING
+            
             if x >= CENTREX - 300 and y <= maxy and x <= CENTREX + 300 then
-                drawfillbox (CENTREX + 300, CENTREY + 150, CENTREX + 800, CENTREY + 300, green)
+                drawfillbox (CENTREX + 300, CENTREY + 150, CENTREX + 840, CENTREY + 300, green)
                 Font.Draw ("Press E to chop the tree", CENTREX + 320, CENTREY + 225, font3, 93)
                 chopAchieve := true
                 Input.KeyDown (chars)
                 if chars ('e') then
-                    drawfillbox (CENTREX + 300, CENTREY + 150, CENTREX + 800, CENTREY + 300, green)
-                    Font.Draw ("Spam E to chop the trees!", CENTREX + 320, CENTREY + 225, font3, 93)
-                    timer2 := Time.Elapsed + 5000
-                    woodCount := 0
-                    for i : 1 .. maxint
+                
+                    randint (randPlay, 1, 3)
+                    if randPlay = 1 then
+                        drawfillbox (CENTREX + 300, CENTREY + 150, CENTREX + 840, CENTREY + 300, green)
+                        Font.Draw ("Spam E to chop the trees!", CENTREX + 320, CENTREY + 225, font3, 93)
+                        timer2 := Time.Elapsed + 5000
+                        woodCount := 0
+                        for i : 1 .. maxint
 
 
-                        timer := Time.Elapsed
-                        lastkeydown := chars
-                        Input.KeyDown (chars)
-                        if chars ('e') and not lastkeydown ('e') then
-                            woodCount += 1
+                            timer := Time.Elapsed
+                            lastkeydown := chars
+                            Input.KeyDown (chars)
+                            if chars ('e') and not lastkeydown ('e') then
+                                woodCount += 1
 
-                        end if
+                            end if
 
-                        exit when timer > timer2
+                            exit when timer > timer2
 
-                        exit when woodCount = 50
+                            exit when woodCount = 50
 
 
-                    end for
+                        end for
 
-                    drawfillbox (CENTREX + 300, CENTREY + 150, CENTREX + 800, CENTREY + 300, green)
-                    Font.Draw ("Timber!!!", CENTREX + 320, CENTREY + 225, font1, 93)
-                    Music.PlayFile ("Chop.mp3")
-                    chop
-                    drawfillbox (CENTREX + 300, CENTREY + 150, CENTREX + 800, CENTREY + 300, green)
-                    Font.Draw ("You have gained " + intstr (chopXP) + " chopping XP", CENTREX + 320, CENTREY + 210, font3, 92)
-                    Font.Draw ("Woodcutting Level : " + intstr (chopLevel), CENTREX + 320, CENTREY + 180, font3, 92)
+                        drawfillbox (CENTREX + 300, CENTREY + 150, CENTREX + 840, CENTREY + 300, green)
+                        Font.Draw ("Chop! Chop! Chop!", CENTREX + 320, CENTREY + 250, font3, 93)
+                        Music.PlayFile ("Chop.mp3")
+                        drawfillbox (CENTREX + 300, CENTREY + 150, CENTREX + 840, CENTREY + 300, green)
+                        chop
+                        
+                        % Rare Item
+                        rWoodItem
+                        
+                        Font.Draw ("You have gained " + intstr (chopXP) + " chopping XP", CENTREX + 320, CENTREY + 210, font3, 92)
+                        drawfillbox (maxx - 340, 0, maxx, 120, green)
+                        Font.Draw ("Woodcutting Level : " + intstr (chopLevel), maxx - 300, 50, font3, 93)
+                        delay (2000)
+                        Input.Pause
 
-                    delay (2000)
-                    Input.Pause
+                    elsif randPlay = 2 then
+
+                        drawfillbox (CENTREX + 300, CENTREY + 150, CENTREX + 840, CENTREY + 300, green)
+                        Font.Draw ("Spam W to chop the trees!", CENTREX + 320, CENTREY + 225, font3, 93)
+                        timer2 := Time.Elapsed + 5000
+                        woodCount := 0
+                        for i : 1 .. maxint
+
+
+                            timer := Time.Elapsed
+                            lastkeydown := chars
+                            Input.KeyDown (chars)
+                            if chars ('w') and not lastkeydown ('w') then
+                                woodCount += 1
+
+                            end if
+
+                            exit when timer > timer2
+
+                            exit when woodCount = 50
+
+
+                        end for
+
+                        drawfillbox (CENTREX + 300, CENTREY + 150, CENTREX + 840, CENTREY + 300, green)
+                        Font.Draw ("Chop! Chop! Chop!", CENTREX + 320, CENTREY + 250, font3, 93)
+                        Music.PlayFile ("Chop.mp3")
+                        drawfillbox (CENTREX + 300, CENTREY + 150, CENTREX + 840, CENTREY + 300, green)
+                        chop
+                        % Rare Item
+                        rMineItem 
+                        Font.Draw ("You have gained " + intstr (chopXP) + " chopping XP", CENTREX + 320, CENTREY + 210, font3, 92)
+                        drawfillbox (maxx - 340, 0, maxx, 120, green)
+                        Font.Draw ("Woodcutting Level : " + intstr (chopLevel), maxx - 300, 50, font3, 93)
+                        delay (2000)
+                        Input.Pause
+
+                    else
+
+                        drawfillbox (CENTREX + 300, CENTREY + 150, CENTREX + 840, CENTREY + 300, green)
+                        Font.Draw ("Spam C to chop the trees!", CENTREX + 320, CENTREY + 225, font3, 93)
+                        timer2 := Time.Elapsed + 5000
+                        woodCount := 0
+                        for i : 1 .. maxint
+
+
+                            timer := Time.Elapsed
+                            lastkeydown := chars
+                            Input.KeyDown (chars)
+                            if chars ('c') and not lastkeydown ('c') then
+                                woodCount += 1
+
+                            end if
+
+                            exit when timer > timer2
+
+                            exit when woodCount = 50
+
+
+                        end for
+
+                        drawfillbox (CENTREX + 300, CENTREY + 150, CENTREX + 840, CENTREY + 300, green)
+                        Font.Draw ("Chop! Chop! Chop!", CENTREX + 320, CENTREY + 250, font3, 93)
+                        Music.PlayFile ("Chop.mp3")
+                        drawfillbox (CENTREX + 300, CENTREY + 150, CENTREX + 840, CENTREY + 300, green)
+                        chop
+                        % Rare Item
+                        rMineItem 
+                        Font.Draw ("You have gained " + intstr (chopXP) + " chopping XP", CENTREX + 320, CENTREY + 210, font3, 92)
+                        drawfillbox (maxx - 340, 0, maxx, 120, green)
+                        Font.Draw ("Woodcutting Level : " + intstr (chopLevel), maxx - 300, 50, font3, 93)
+                        delay (2000)
+                        Input.Pause
+
+                    end if
                 end if
 
             end if
@@ -1132,33 +1380,129 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                 mineAchieve := true
                 Input.KeyDown (chars)
                 if chars ('e') then
-                    drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
-                    Font.Draw ("Spam E to mine", CENTREX - 250, CENTREY + 250, font3, 93)
-                    timer2 := Time.Elapsed + 5000
-                    oreCount := 0
-                    for i : 1 .. maxint
+                    randint (randPlay, 1, 3)
+                    if randPlay = 1 then
+
+                        drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
+                        Font.Draw ("Spam E to mine", CENTREX - 250, CENTREY + 250, font3, 93)
+                        timer2 := Time.Elapsed + 5000
+                        oreCount := 0
+                        for i : 1 .. maxint
 
 
-                        timer := Time.Elapsed
-                        lastkeydown := chars
-                        Input.KeyDown (chars)
-                        if chars ('e') and not lastkeydown ('e') then
-                            oreCount += 1
+                            timer := Time.Elapsed
+                            lastkeydown := chars
+                            Input.KeyDown (chars)
+                            if chars ('e') and not lastkeydown ('e') then
+                                oreCount += 1
 
-                        end if
+                            end if
 
-                        exit when timer > timer2
+                            exit when timer > timer2
 
-                        exit when oreCount = 50
+                            exit when oreCount = 50
 
 
-                    end for
-                    mine
-                    drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
-                    Music.PlayFile ("Mine.mp3")
-                    Font.Draw ("You have gained " + intstr (mineXP) + " mining XP", CENTREX - 190, CENTREY + 240, font3, 92)
-                    Font.Draw ("Mining Level : " + intstr (mineLevel), CENTREX - 190, CENTREY + 210, font3, 92)
-                    Input.Pause
+                        end for
+
+                        mine
+                        drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
+                        Font.Draw ("What will you find today?", CENTREX - 250, CENTREY + 250, font3, 92)
+                        Music.PlayFile ("Mine.mp3")
+                        
+                        % Rare Item
+                        rMineItem 
+                        drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
+                        Font.Draw ("You have gained " + intstr (mineXP) + " mining XP", CENTREX - 220, CENTREY + 240, font3, 92)
+
+                        % Mine Level
+                        drawfillbox (maxx - 340, 0, maxx, 120, 18)
+                        Font.Draw ("Mining Level : " + intstr (mineLevel), maxx - 300, 50, font3, 24)
+                        delay (2000)
+                        Input.Pause
+
+                    elsif randPlay = 2 then
+
+                        drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
+                        Font.Draw ("Spam M to mine", CENTREX - 250, CENTREY + 250, font3, 93)
+                        timer2 := Time.Elapsed + 5000
+                        oreCount := 0
+                        for i : 1 .. maxint
+
+
+                            timer := Time.Elapsed
+                            lastkeydown := chars
+                            Input.KeyDown (chars)
+                            if chars ('m') and not lastkeydown ('m') then
+                                oreCount += 1
+
+                            end if
+
+                            exit when timer > timer2
+
+                            exit when oreCount = 50
+
+
+                        end for
+
+                        mine
+                        drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
+                        Font.Draw ("What will you find today?", CENTREX - 250, CENTREY + 250, font3, 92)
+                        Music.PlayFile ("Mine.mp3")
+                        
+                        % Rare Item
+                        rMineItem 
+                        drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
+                        Font.Draw ("You have gained " + intstr (mineXP) + " mining XP", CENTREX - 220, CENTREY + 240, font3, 92)
+
+                        % Mine Level
+                        drawfillbox (maxx - 340, 0, maxx, 120, 18)
+                        Font.Draw ("Mining Level : " + intstr (mineLevel), maxx - 300, 50, font3, 24)
+                        delay (2000)
+                        Input.Pause
+
+                    else
+
+                        drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
+                        Font.Draw ("Spam O to mine", CENTREX - 250, CENTREY + 250, font3, 93)
+                        timer2 := Time.Elapsed + 5000
+                        oreCount := 0
+                        for i : 1 .. maxint
+
+
+                            timer := Time.Elapsed
+                            lastkeydown := chars
+                            Input.KeyDown (chars)
+                            if chars ('o') and not lastkeydown ('o') then
+                                oreCount += 1
+
+                            end if
+
+                            exit when timer > timer2
+
+                            exit when oreCount = 50
+
+
+                        end for
+
+                        mine
+                        drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
+                        Font.Draw ("What will you find today?", CENTREX - 250, CENTREY + 250, font3, 92)
+                        Music.PlayFile ("Mine.mp3")
+                        
+                        % Rare Item
+                        rMineItem 
+                        drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
+                        Font.Draw ("You have gained " + intstr (mineXP) + " mining XP", CENTREX - 220, CENTREY + 240, font3, 92)
+                        
+   
+                        % Mine Level
+                        drawfillbox (maxx - 340, 0, maxx, 120, 18)
+                        Font.Draw ("Mining Level : " + intstr (mineLevel), maxx - 300, 50, font3, 24)
+                        delay (2000)
+                        Input.Pause
+
+                    end if
                 end if
             end if
         end loop
@@ -1166,7 +1510,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
     % --------------------------------------------------------------------- END OF MINESHAFT --------------
 
 
-    % --------------------------------------------------------------------- CAVE --------------
+    % --------------------------------------------------------------------- CAVE -----------------------------------------------
     if caveRoom = true then
         cave
         caveRoom := false
@@ -1192,7 +1536,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
             delay (20)
             View.Update
             Sprite.SetPosition (charcSpr, x, y, true)
-            if x >= 100 and y >= maxy - 210 and x <= 160 then %and y <= maxy and mons1Death = true and mons3Death = true and mons2Death = true then
+            if x >= 100 and y >= maxy - 210 and x <= 160 then     %and y <= maxy and mons1Death = true and mons3Death = true and mons2Death = true then
                 bbossRoom := true
                 exit
             end if
@@ -1214,7 +1558,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                 Font.Draw ('Defeat all 3 monsters to face', CENTREX - 250, CENTREY + 340, font3, 93)
                 Font.Draw ('one of the 3 bosses.', CENTREX - 250, CENTREY + 310, font3, 93)
                 Font.Draw ('"You cannot hope to win."', CENTREX - 250, CENTREY + 250, font3, 93)
-                Font.Draw ("(Press E to fight)", CENTREX - 250, CENTREY + 220, font3, 93)
+                Font.Draw ("(Press E to fight)", CENTREX - 250, CENTREY + 220, font4, 93)
                 Input.KeyDown (chars)
                 if chars ('e') then
 
@@ -1284,12 +1628,12 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                 Font.Draw ('Defeat all 3 monsters to face', CENTREX - 250, CENTREY + 340, font3, 93)
                 Font.Draw ('one of the 3 bosses.', CENTREX - 250, CENTREY + 310, font3, 93)
                 Font.Draw ('"Death awaits you."', CENTREX - 250, CENTREY + 250, font3, 93)
-                Font.Draw ("(Press E to fight)", CENTREX - 250, CENTREY + 220, font3, 93)
+                Font.Draw ("(Press E to fight)", CENTREX - 250, CENTREY + 220, font4, 93)
                 Input.KeyDown (chars)
                 if chars ('e') then
 
                     drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
-                    Font.Draw ("Repeatedly press E to fight!", CENTREX - 250, CENTREY + 250, font3, 93)
+                    Font.Draw ("Repeatedly press X to fight!", CENTREX - 250, CENTREY + 250, font3, 93)
                     timer2 := Time.Elapsed + 3500
                     playerDamage := 0
                     for i : 1 .. maxint
@@ -1298,7 +1642,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                         timer := Time.Elapsed
                         lastkeydown := chars
                         Input.KeyDown (chars)
-                        if chars ('e') and not lastkeydown ('e') then
+                        if chars ('x') and not lastkeydown ('x') then
                             playerDamage += 1
 
                         end if
@@ -1354,12 +1698,12 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                 Font.Draw ('Defeat all 3 monsters to face', CENTREX - 250, CENTREY + 340, font3, 93)
                 Font.Draw ('one of the 3 bosses.', CENTREX - 250, CENTREY + 310, font3, 93)
                 Font.Draw ('"You think you can beat me?"', CENTREX - 250, CENTREY + 250, font3, 93)
-                Font.Draw ("(Press E to fight)", CENTREX - 250, CENTREY + 220, font3, 93)
+                Font.Draw ("(Press E to fight)", CENTREX - 250, CENTREY + 220, font4, 93)
                 Input.KeyDown (chars)
                 if chars ('e') then
 
                     drawfillbox (CENTREX - 300, CENTREY + 200, CENTREX + 200, maxy, 19)
-                    Font.Draw ("Repeatedly press E to fight!", CENTREX - 250, CENTREY + 250, font3, 93)
+                    Font.Draw ("Repeatedly press F to fight!", CENTREX - 250, CENTREY + 250, font3, 93)
                     timer2 := Time.Elapsed + 2500
                     playerDamage := 0
                     for i : 1 .. maxint
@@ -1368,7 +1712,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                         timer := Time.Elapsed
                         lastkeydown := chars
                         Input.KeyDown (chars)
-                        if chars ('e') and not lastkeydown ('e') then
+                        if chars ('f') and not lastkeydown ('f') then
                             playerDamage += 1
 
                         end if
@@ -1422,7 +1766,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
 
 
     % --------------------------------------------------------------------- BOSS ROOM --------------
-    if bbossRoom = true then % and mons1Death = true and mons3Death = true and mons2Death = true then
+    if bbossRoom = true then     % and mons1Death = true and mons3Death = true and mons2Death = true then
         bbossRoom := false
         mons1Death := false
         mons2Death := false
