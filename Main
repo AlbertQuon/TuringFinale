@@ -463,7 +463,8 @@ end mineshaft
 Music.PlayFileStop
 
 % Fishing Ocean ------------------------------------------------------------------------- OCEAN
-
+process soundtrack8
+Music.PlayFile ("OceanMusic.mp3")
 
 procedure ocean
 
@@ -1151,6 +1152,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
     if oceanRoom = true then
         oceanRoom := false
         ocean
+	fork soundtrack8
         Sprite.Show (charcSpr)
         loop
             Input.KeyDown (chars)
@@ -1207,6 +1209,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
             end if
 
         end loop
+	Music.PlayFileStop
 
     end if
     % --------------------------------------------------------------------- END OF OCEAN --------
