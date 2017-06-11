@@ -147,6 +147,9 @@ mobHealth3 := 600
 
 
 % Start Menu -------------------------------------------------------------------------------------------------- START
+process soundtrack1
+	Music.PlayFileLoop ("Music.mp3")
+end soundtrack1
 procedure startMenu
 
 
@@ -318,7 +321,9 @@ end hpBar
 
 
 % House ---------------------------------------------------------------------------------------------- HOUSE
-
+process soundtrack2
+    Music.PlayFileLoop ("ElevatorMusic.wav")
+end soundtrack2
 
 procedure house
 
@@ -360,7 +365,10 @@ end house
 
 % Cave --------------------------------------------------------------------------- CAVE
 
-
+process soundtrack3
+	Music.PlayFileLoop ("CaveMusic.mp3")
+end soundtrack3
+    
 procedure cave
 
     % Character Sprite Position
@@ -387,7 +395,7 @@ procedure cave
     hpBar
 
 end cave
-
+Music.PlayFileStop
 
 % Boss Room ---------------------------------------------------------------------- B ROOM
 
@@ -421,7 +429,9 @@ end bossRoom
 
 
 % Mineshaft --------------------------------------------------------------------------- MINESHAFT
-
+process soundtrack4
+	Music.PlayFileLoop ("MineshaftMusic.mp3")
+end soundtrack4
 
 procedure mineshaft
 
@@ -450,7 +460,7 @@ procedure mineshaft
     Font.Draw ("Mining Level : " + intstr (chopLevel), maxx - 300, 50, font3, 24)
 
 end mineshaft
-
+Music.PlayFileStop
 
 % Fishing Ocean ------------------------------------------------------------------------- OCEAN
 
@@ -543,7 +553,9 @@ end forest
 
 
 % Main Map ---------------------------------------------------------------------------- MAIN MAP ------------------------------------------------------------
-
+process soundtrack5
+Music.PlayFile ("MainMenuMusic.mp3")
+end soundtrack5
 
 procedure mainMap
 
@@ -879,6 +891,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
 
     if startMenuB = true then
         startMenuB := false
+        fork soundtrack1
         startMenu
         loop
             buttonwait ("down", x, y, buttonNumber, buttonupdown)
@@ -1035,6 +1048,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                 exit
             end if
         end loop
+        Music.PlayFileStop
 
     end if
     %------------------------------------------------------------------------------------------- END OF CHARACTER SELECT
@@ -1044,6 +1058,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
     
     if houseRoom = true then
         houseRoom := false
+        fork soundtrack2
         house
         Sprite.Show (charcSpr)
         loop
@@ -1071,6 +1086,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
             if x >= maxx - 200 and y >= maxy - 200 then
                 startMenuB := true
                 Sprite.Free (charcSpr)
+                Music.PlayFileStop
                 exit
             end if
         end loop
@@ -1103,18 +1119,23 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
             Sprite.SetPosition (charcSpr, x, y, true)
             if y > maxy - 100 then
                 oceanRoom := true
+                Music.PlayFileStop
                 exit
             elsif x >= maxx - 340 and y >= CENTREY and x <= maxx - 150 and y <= CENTREY + 100 then
                 forestRoom := true
+                Music.PlayFileStop
                 exit
             elsif x >= 0 and y >= 0 and x <= 200 and y <= 200 then
                 mineRoom := true
+                Music.PlayFileStop
                 exit
             elsif x >= CENTREX - 500 and y >= CENTREY and x <= CENTREX - 300 and y <= CENTREY + 200 then
                 caveRoom := true
+                Music.PlayFileStop
                 exit
             elsif x >= maxx - 300 and y >= 100 and x <= maxx - 100 and y <= 300 then
                 houseRoom := true
+                Music.PlayFileStop
                 exit
             end if
         end loop
@@ -1350,6 +1371,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
     if mineRoom = true then
         mineRoom := false
         mineshaft
+        fork soundtrack4
         loop
             Input.KeyDown (chars)
             if chars (KEY_UP_ARROW) then
@@ -1513,6 +1535,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
     % --------------------------------------------------------------------- CAVE -----------------------------------------------
     if caveRoom = true then
         cave
+        fork soundtrack3
         caveRoom := false
         % Mob Health Resets
         bossHealth := 1000
