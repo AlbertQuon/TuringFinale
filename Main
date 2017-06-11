@@ -398,7 +398,9 @@ end cave
 Music.PlayFileStop
 
 % Boss Room ---------------------------------------------------------------------- B ROOM
-
+process soundtrack9
+Music.PlayFile ("BossMusic")
+end soundtrack9
 
 procedure bossRoom
 
@@ -1804,6 +1806,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
         mons2Death := false
         mons3Death := false
         bossRoom
+	fork soundtrack9
         % Health Reset
         if totalFight >= 250 and totalFight < 350 then
             fightLevel := 2
@@ -1892,6 +1895,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                         houseRoom := true
                         Sprite.Hide (bossSpr)
                         deathCount += 1
+			Music.PlayFileStop
                         exit
                     end if
                     if bossHealth <= 0 then
@@ -1908,6 +1912,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                 end if
             end if
         end loop
+	Music.PlayFileStop
     end if
     % --------------------------------end of BOSS ROOM--------------------------
 end loop         % outer game loop
