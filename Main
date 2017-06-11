@@ -322,7 +322,7 @@ end hpBar
 
 % House ---------------------------------------------------------------------------------------------- HOUSE
 process soundtrack2
-    Music.PlayFileLoop ("ElevatorMusic.wav")
+    Music.PlayFileLoop ("ElevatorMusic.mp3")
 end soundtrack2
 
 procedure house
@@ -502,7 +502,9 @@ end ocean
 
 
 % Forest -------------------------------------------------------------------------------- FOREST
-
+process soundtrack7
+Music.PlayFile ("ForestMusic.mp3") 
+end soundtrack7
 
 procedure forest
 
@@ -1100,6 +1102,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
     if mainMapRoom = true then
         mainMapRoom := false
         mainMap
+	fork soundtrack5
         loop         % main Map
             Input.KeyDown (chars)
             if chars (KEY_UP_ARROW) then
@@ -1213,6 +1216,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
     if forestRoom = true then
         forestRoom := false
         forest
+	fork soundtrack7
         loop
             Input.KeyDown (chars)
             if chars (KEY_UP_ARROW) then
@@ -1234,7 +1238,9 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                 mainMapRoom := true
                 x := CENTREX
                 y := CENTREY
+		Music.PlayFileStop
                 exit
+		
             end if
             % Interaction, Wood Cutting!! --------------------------------------------------------------------------- WOOD CUTTING
             
