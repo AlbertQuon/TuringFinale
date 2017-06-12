@@ -1,10 +1,10 @@
-% FinalProjectBV8.t
+% FinalProjectBV9.t
 % The Final Project : Role Playing Game
 % Game : The Journey to Oblivion
-% Albert Quon & Kyler Lin
+% Creators : Albert Quon & Kyler Lin
 % Initialization Date : 5/18/2017
 % Current Date : 6/10/2017
-% Current Version : Beta 8 - Interaction Stages
+% Current Version : Beta 9 - Polishing
 % Use lunapic.com to use transparent pictures
 % Laptop Screen Resoltion : 1366 x 768
 
@@ -31,20 +31,22 @@ var chars : array char of boolean
 
 
 % Pictures -------------------------------------------------------------------------------- Pictures
-var pic1, pic2, pic3 : int
+var pic1, pic2, pic3, mineCartPic : int
 var housePic, cavePic, mineShaftPic, bossCavePic, mons1Pic, mons2Pic, mons3Pic : int
 var mineOre, mineOre2 : int
 var bossPic, boss2Pic, boss3Pic : int
 
-
+% Boss Room
 bossCavePic := Pic.FileNew ("bosscave.gif")
 bossCavePic := Pic.Scale (bossCavePic, maxx, maxy)
 
-
+% Mineshaft
 mineOre := Pic.FileNew ("mineore.gif")
 mineOre := Pic.Scale (mineOre, 200, 200)
 mineOre2 := Pic.FileNew ("mineOre2.gif")
 mineOre2 := Pic.Scale (mineOre2, 200, 200)
+mineCartPic := Pic.FileNew ("minecart.gif")
+mineCartPic := Pic.Scale (mineCartPic, 200, 200) 
 
 
 % Boolean + Characters -------------------------------------------------------------------------------------------------------------------------- Boolean
@@ -114,11 +116,11 @@ mons3Spr := Sprite.New (mons3Pic)
 % Enemy Health
 var mobHealth1, mobHealth2, mobHealth3, bossHealth : int
 % Levels
-var mineLevel, chopLevel, fishLevel, fightLevel, charc : int := 1
+var mineLevel, chopLevel, fishLevel, fightLevel : int := 1
 
 
 % Counts
-var health, woodCount, fishCount, oreCount, itemCount, deathCount : int := 0
+var health, woodCount, fishCount, oreCount, itemCount, deathCount, charc : int := 0
 % Total XP
 var totalMine, totalChop, totalFish, totalFight : int := 0
 % Achievement Score
@@ -148,7 +150,7 @@ mobHealth3 := 600
 
 % Start Menu -------------------------------------------------------------------------------------------------- START
 process soundtrack1
-	Music.PlayFileLoop ("Music.mp3")
+        Music.PlayFileLoop ("Music.mp3")
 end soundtrack1
 procedure startMenu
 
@@ -157,6 +159,11 @@ procedure startMenu
     pic1 := Pic.FileNew ("startmenupic.jpg")
     pic1 := Pic.Scale (pic1, maxx, maxy)
     Pic.Draw (pic1, 0, 0, picMerge)
+    drawfillbox (CENTREX - 100, CENTREY + 120, CENTREX + 80, CENTREY + 200, 210)
+    drawfillbox (CENTREX - 100, CENTREY + 20, CENTREX + 80, CENTREY + 100, 210)
+    drawfillbox (CENTREX - 100, CENTREY - 80, CENTREX + 80, CENTREY, 210)
+    drawfillbox (CENTREX - 100, CENTREY - 180, CENTREX + 80, CENTREY - 100, 210)
+    drawfillbox (CENTREX - 100, CENTREY - 280, CENTREX + 80, CENTREY - 200, 210)
     Font.Draw ("Journey of Oblivion", CENTREX - 170, 600, font1, brightred)
     Font.Draw ("Start Game", CENTREX - 80, 500, font2, 0)
     Font.Draw ("Instructions", CENTREX - 85, 400, font2, 0)
@@ -313,7 +320,8 @@ procedure hpBar
     end if
     Font.Draw ("HP: " + intstr (health), maxx - 200, 20, font1, white)
     % Note to change for HP changes, just add the procedure again
-    Font.Draw ("Deaths : " + intstr (deathCount), maxx - 200, 90, font3, red)
+    drawfillbox (maxx - 230, 80, maxx, 120, red)
+    Font.Draw ("Deaths : " + intstr (deathCount), maxx - 200, 90, font3, black)
 
 
 end hpBar
@@ -366,7 +374,7 @@ end house
 % Cave --------------------------------------------------------------------------- CAVE
 
 process soundtrack3
-	Music.PlayFileLoop ("CaveMusic.mp3")
+        Music.PlayFileLoop ("CaveMusic.mp3")
 end soundtrack3
     
 procedure cave
@@ -398,8 +406,9 @@ end cave
 Music.PlayFileStop
 
 % Boss Room ---------------------------------------------------------------------- B ROOM
+
 process soundtrack9
-Music.PlayFile ("BossMusic")
+Music.PlayFile ("BossMusic.mp3")
 end soundtrack9
 
 procedure bossRoom
@@ -432,7 +441,7 @@ end bossRoom
 
 % Mineshaft --------------------------------------------------------------------------- MINESHAFT
 process soundtrack4
-	Music.PlayFileLoop ("MineshaftMusic.mp3")
+        Music.PlayFileLoop ("MineshaftMusic.mp3")
 end soundtrack4
 
 procedure mineshaft
@@ -452,11 +461,20 @@ procedure mineshaft
     drawfillbox (maxx - 300, maxy - 350, maxx - 260, maxy - 100, 233)
     drawfillbox (maxx - 150, maxy - 350, maxx - 110, maxy - 100, 233)
     drawfillbox (maxx - 330, maxy - 100, maxx - 80, maxy - 150, 233)
-    Pic.Draw (mineOre, CENTREX, CENTREY, picMerge)
-    Pic.Draw (mineOre2, CENTREX - 100, CENTREY - 200, picMerge)
-    Pic.Draw (mineOre, 200, 200, picMerge)
-    Pic.Draw (mineOre, 400, 400, picMerge)
-    %Pic.Draw (mineOre2, maxx - 300, CENTREY - 300, picMerge)
+    
+    % Ore
+    Pic.Draw (mineOre, 300, 129, picMerge)
+    Pic.Draw (mineOre2, 415, 243, picMerge)
+    Pic.Draw (mineOre, 215, 200, picMerge)
+    Pic.Draw (mineOre, 100, 200, picMerge)
+    Pic.Draw (mineOre2, 520, 109, picMerge)
+    Pic.Draw (mineCartPic, 0, 0, picMerge)
+    Pic.Draw (mineOre, 617, 129, picMerge)
+    Pic.Draw (mineOre2, 475, 200, picMerge)
+    Pic.Draw (mineOre, 409, 178, picMerge)
+    Pic.Draw (mineOre, 620, 230, picMerge)
+    Pic.Draw (mineOre2, 500, 240, picMerge)
+    
     % Mine Level
     drawfillbox (maxx - 340, 0, maxx, 120, 18)
     Font.Draw ("Mining Level : " + intstr (chopLevel), maxx - 300, 50, font3, 24)
@@ -467,6 +485,7 @@ Music.PlayFileStop
 % Fishing Ocean ------------------------------------------------------------------------- OCEAN
 process soundtrack8
 Music.PlayFile ("OceanMusic.mp3")
+end soundtrack8
 
 procedure ocean
 
@@ -617,9 +636,9 @@ procedure characterCreate
 
     cls
     Font.Draw ("Choose Your Character", CENTREX - 150, CENTREY - 150, font2, blue)
-    drawfillbox (100, CENTREY - 100, 500, CENTREY + 300, red)
-    drawfillbox (CENTREX - 200, CENTREY - 100, CENTREX + 200, CENTREY + 300, blue)
+    drawfillbox (100, CENTREY - 100, 500, CENTREY + 300, red)  
     drawfillbox (maxx - 500, CENTREY - 100, maxx - 100, CENTREY + 300, green)
+    drawfillbox (CENTREX - 200, CENTREY - 100, CENTREX + 200, CENTREY + 300, blue)
     Pic.Draw (charcWar, 90, CENTREY - 50, picMerge)
     Pic.Draw (charcMage, CENTREX - 200, CENTREY - 50, picMerge)
     Pic.Draw (charcRang, maxx - 480, CENTREY - 50, picMerge)
@@ -1005,21 +1024,22 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                 charc := 1
                 drawfillbox (100, CENTREY - 100, 500, CENTREY + 300, brightred)
                 Pic.Draw (charcWar, 90, CENTREY - 50, picMerge)
-                drawfillbox (CENTREX - 200, CENTREY - 100, CENTREX + 200, CENTREY + 300, blue)
-                Pic.Draw (charcMage, CENTREX - 200, CENTREY - 50, picMerge)
                 drawfillbox (maxx - 500, CENTREY - 100, maxx - 100, CENTREY + 300, green)
                 Pic.Draw (charcRang, maxx - 480, CENTREY - 50, picMerge)
+                drawfillbox (CENTREX - 200, CENTREY - 100, CENTREX + 200, CENTREY + 300, blue)
+                Pic.Draw (charcMage, CENTREX - 200, CENTREY - 50, picMerge)
+                
 
 
 
             elsif x >= CENTREX - 200 and y >= CENTREY - 100 and x <= CENTREX + 200 and y <= CENTREY + 300 then
-                charc := 2
-                drawfillbox (CENTREX - 200, CENTREY - 100, CENTREX + 200, CENTREY + 300, brightblue)
-                Pic.Draw (charcMage, CENTREX - 200, CENTREY - 50, picMerge)
+                charc := 2               
                 drawfillbox (100, CENTREY - 100, 500, CENTREY + 300, red)
                 Pic.Draw (charcWar, 90, CENTREY - 50, picMerge)
                 drawfillbox (maxx - 500, CENTREY - 100, maxx - 100, CENTREY + 300, green)
                 Pic.Draw (charcRang, maxx - 480, CENTREY - 50, picMerge)
+                drawfillbox (CENTREX - 200, CENTREY - 100, CENTREX + 200, CENTREY + 300, brightblue)
+                Pic.Draw (charcMage, CENTREX - 200, CENTREY - 50, picMerge)
 
 
 
@@ -1105,7 +1125,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
     if mainMapRoom = true then
         mainMapRoom := false
         mainMap
-	fork soundtrack5
+        fork soundtrack5
         loop         % main Map
             Input.KeyDown (chars)
             if chars (KEY_UP_ARROW) then
@@ -1154,7 +1174,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
     if oceanRoom = true then
         oceanRoom := false
         ocean
-	fork soundtrack8
+        fork soundtrack8
         Sprite.Show (charcSpr)
         loop
             Input.KeyDown (chars)
@@ -1211,7 +1231,6 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
             end if
 
         end loop
-	Music.PlayFileStop
 
     end if
     % --------------------------------------------------------------------- END OF OCEAN --------
@@ -1221,7 +1240,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
     if forestRoom = true then
         forestRoom := false
         forest
-	fork soundtrack7
+        fork soundtrack7
         loop
             Input.KeyDown (chars)
             if chars (KEY_UP_ARROW) then
@@ -1243,9 +1262,9 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                 mainMapRoom := true
                 x := CENTREX
                 y := CENTREY
-		Music.PlayFileStop
+                Music.PlayFileStop
                 exit
-		
+                
             end if
             % Interaction, Wood Cutting!! --------------------------------------------------------------------------- WOOD CUTTING
             
@@ -1806,7 +1825,7 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
         mons2Death := false
         mons3Death := false
         bossRoom
-	fork soundtrack9
+        fork soundtrack9
         % Health Reset
         if totalFight >= 250 and totalFight < 350 then
             fightLevel := 2
@@ -1895,7 +1914,6 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                         houseRoom := true
                         Sprite.Hide (bossSpr)
                         deathCount += 1
-			Music.PlayFileStop
                         exit
                     end if
                     if bossHealth <= 0 then
@@ -1912,7 +1930,6 @@ loop % outer game loop, loops through, checks which is true (one procedure only)
                 end if
             end if
         end loop
-	Music.PlayFileStop
     end if
     % --------------------------------end of BOSS ROOM--------------------------
 end loop         % outer game loop
